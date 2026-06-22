@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClickMap Demo Client Page</title>
+  <!-- Outfit Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #09090b;
+      --card-bg: rgba(24, 24, 27, 0.6);
+      --border: rgba(63, 63, 70, 0.4);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent: #ec4899;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+    }
+
+    nav {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
+    }
+
+    .hero {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      backdrop-filter: blur(8px);
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      color: var(--primary);
+    }
+
+    .card h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .interactive-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .clicks-counter {
+      font-size: 1.2rem;
+      color: var(--accent);
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      background: rgba(236, 72, 153, 0.1);
+      border-radius: 20px;
+      border: 1px solid rgba(236, 72, 153, 0.2);
+    }
+
+    .button-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+  <!-- Embed ClickMap Tracker -->
+  <script src="/tracker.js"></script>
+</head>
+<body>
+
+  <header>
+    <div class="logo" id="header-logo">ClickMap.</div>
+    <nav>
+      <a href="#features" id="nav-features">Features</a>
+      <a href="#interactive" id="nav-interactive">Playground</a>
+      <a href="/demo?ref=pricing" id="nav-pricing">Pricing</a>
+    </nav>
+    <button class="btn btn-secondary" id="nav-login">Sign In</button>
+  </header>
+
+  <div class="container">
+    <section class="hero">
+      <h1>Track User Behavior in <span>Real-Time</span></h1>
+      <p>Drop our 1KB vanilla JS script on your page. Instantly visualize click maps, timeline journeys, and optimize user experience with premium data flow.</p>
+      <div class="cta-group">
+        <button class="btn" id="hero-cta-primary">Get Started Free</button>
+        <button class="btn btn-secondary" id="hero-cta-secondary">Book a Demo</button>
+      </div>
+    </section>
+
+    <section class="grid" id="features">
+      <div class="card" id="card-sessions">
+        <div class="card-icon">👁</div>
+        <h3>Session Tracking</h3>
+        <p>Aggregate page view flow and user sessions automatically. Group events chronologically to construct clear journey timelines.</p>
+      </div>
+      <div class="card" id="card-heatmaps">
+        <div class="card-icon">🔥</div>
+        <h3>Click Heatmaps</h3>
+        <p>Record click locations with pixel accuracy. Visualize concentration zones and interactive hotspots without external libraries.</p>
+      </div>
+      <div class="card" id="card-speed">
+        <div class="card-icon">⚡</div>
+        <h3>High Performance</h3>
+        <p>Designed with keepalive transport and lightweight aggregation. Zero page render blockage for the smoothest site experience.</p>
+      </div>
+    </section>
+
+    <section class="interactive-section" id="interactive">
+      <h2>Interactive Playground</h2>
+      <p>Click these target buttons to generate click coordinates. The React Dashboard will display these coordinate clusters dynamically!</p>
+      <div class="clicks-counter" id="clicks-count-display">Total Clicks Registered: 0</div>
+      
+      <div class="button-cluster">
+        <button class="btn" id="play-btn-1" style="background-color: #f59e0b;">Yellow Button</button>
+        <button class="btn" id="play-btn-2" style="background-color: #10b981;">Green Button</button>
+        <button class="btn" id="play-btn-3" style="background-color: #3b82f6;">Blue Button</button>
+        <button class="btn" id="play-btn-4" style="background-color: #ef4444;">Red Button</button>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 ClickMap Inc. All rights reserved. Tracking is enabled on this page.</p>
+  </footer>
+
+  <script>
+    // Just a fun script to count clicks locally for visual feedback on demo page
+    let clickCount = 0;
+    const clickDisplay = document.getElementById('clicks-count-display');
+    document.addEventListener('click', () => {
+      clickCount++;
+      if (clickDisplay) {
+        clickDisplay.textContent = `Total Clicks Registered: ${clickCount}`;
+      }
+    });
+  </script>
+</body>
+</html>
