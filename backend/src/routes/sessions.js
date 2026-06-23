@@ -14,6 +14,7 @@ router.get('/', async (req, res) => {
           event_count: { $sum: 1 },
           first_seen: { $min: '$timestamp' },
           last_seen: { $max: '$timestamp' },
+          device: { $max: '$metadata' },
         },
       },
       {
@@ -23,6 +24,8 @@ router.get('/', async (req, res) => {
           event_count: 1,
           first_seen: 1,
           last_seen: 1,
+          bounced: { $eq: ['$event_count', 1] },
+          device: 1,
         },
       },
       {
