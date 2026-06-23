@@ -1,10 +1,10 @@
 (function () {
-  // 1. Determine API endpoint dynamically from the script source URL
+  // Determine API endpoint dynamically from the script source URL
   const scriptSrc = document.currentScript ? document.currentScript.src : '';
   const apiOrigin = scriptSrc ? new URL(scriptSrc).origin : window.location.origin;
   const apiEndpoint = `${apiOrigin}/api/events`;
 
-  // 2. Session Management
+  // Session Management
   const SESSION_KEY = 'clickmap_session_id';
   let sessionId = localStorage.getItem(SESSION_KEY);
 
@@ -22,8 +22,8 @@
     localStorage.setItem(SESSION_KEY, sessionId);
   }
 
-  // 3. Helper function to send events
-  function sendEvent(eventType, x = null, y = null) {
+  // Helper function to send events
+  function sendEvent(eventType, x = null, y = null, depth = null, metadata = null) {
     const payload = {
       session_id: sessionId,
       event_type: eventType,
@@ -31,6 +31,8 @@
       timestamp: new Date().toISOString(),
       x: x !== null ? Math.round(x) : null,
       y: y !== null ? Math.round(y) : null,
+      depth: depth,
+      metadata: metadata,
     };
 
     const data = JSON.stringify(payload);
@@ -56,9 +58,15 @@
     }
   }
 
-  // 4. Track Page View on DOMContentLoaded
+  // Track Page View on DOMContentLoaded
   function initPageView() {
-    sendEvent('page_view');
+    const metadata = {
+      user_agent: navigator.userAgent,
+      screen_width: window.screen.width,
+      screen_height: window.screen.height,
+      referrer: document.referrer || '',
+    };
+    sendEvent('page_view', null, null, null, metadata);
   }
 
   if (document.readyState === 'loading') {
@@ -67,7 +75,7 @@
     initPageView();
   }
 
-  // 5. Track Click events on document click
+  // Track Click events on document click
   document.addEventListener('click', function (event) {
     // pageX and pageY include the scroll offsets automatically.
     const pageX = event.pageX;
@@ -90,4 +98,35 @@
 
     sendEvent('click', x_normalized, y_normalized);
   });
+
+  // Track Scroll Depth threshold crossings
+  const triggeredMilestones = new Set();
+  let scrollTimeout = null;
+
+  function trackScroll() {
+    if (scrollTimeout) return;
+
+    scrollTimeout = setTimeout(function () {
+      scrollTimeout = null;
+
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+
+      const scrollableHeight = scrollHeight - clientHeight;
+      if (scrollableHeight <= 0) return;
+
+      const scrollPercent = (scrollTop / scrollableHeight) * 100;
+      const milestones = [25, 50, 75, 100];
+
+      milestones.forEach(function (milestone) {
+        if (scrollPercent >= milestone && !triggeredMilestones.has(milestone)) {
+          triggeredMilestones.add(milestone);
+          sendEvent('scroll_depth', null, null, milestone, null);
+        }
+      });
+    }, 150); // throttle 150ms
+  }
+
+  window.addEventListener('scroll', trackScroll);
 })();
