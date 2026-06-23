@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import Sessions from './pages/Sessions';
 import Heatmap from './pages/Heatmap';
-import { Users, Flame, ExternalLink, LineChart } from 'lucide-react';
+import PageStats from './pages/PageStats';
+import { Users, Flame, ExternalLink, LineChart, BarChart3 } from 'lucide-react';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('sessions'); // 'sessions' or 'heatmap'
+  const [activeTab, setActiveTab] = useState('sessions'); // 'sessions', 'heatmap', or 'stats'
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -52,6 +53,18 @@ function App() {
               <Flame size={15} />
               <span className="hidden sm:inline">Heatmap</span>
             </button>
+
+            <button
+              onClick={() => setActiveTab('stats')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                activeTab === 'stats'
+                  ? 'bg-zinc-800/50 text-emerald-400 border border-zinc-700/50'
+                  : 'text-zinc-400 hover:text-zinc-200 border border-transparent'
+              }`}
+            >
+              <BarChart3 size={15} />
+              <span className="hidden sm:inline">Page Stats</span>
+            </button>
           </nav>
 
           {/* External Links */}
@@ -73,7 +86,9 @@ function App() {
       {/* Main Panel Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <div className="transition-all duration-300">
-          {activeTab === 'sessions' ? <Sessions /> : <Heatmap />}
+          {activeTab === 'sessions' && <Sessions />}
+          {activeTab === 'heatmap' && <Heatmap />}
+          {activeTab === 'stats' && <PageStats />}
         </div>
       </main>
 
