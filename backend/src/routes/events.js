@@ -6,7 +6,7 @@ const router = express.Router();
 // POST /api/events
 router.post('/', async (req, res) => {
   try {
-    const { session_id, event_type, page_url, timestamp, x, y } = req.body;
+    const { session_id, event_type, page_url, timestamp, x, y, depth, metadata } = req.body;
 
     // Validate required fields
     if (!session_id || !event_type || !page_url || !timestamp) {
@@ -15,9 +15,9 @@ router.post('/', async (req, res) => {
       });
     }
 
-    if (event_type !== 'page_view' && event_type !== 'click') {
+    if (event_type !== 'page_view' && event_type !== 'click' && event_type !== 'scroll_depth') {
       return res.status(400).json({
-        error: "Invalid event_type. Must be either 'page_view' or 'click'.",
+        error: "Invalid event_type. Must be 'page_view', 'click', or 'scroll_depth'.",
       });
     }
 
@@ -28,6 +28,8 @@ router.post('/', async (req, res) => {
       timestamp: new Date(timestamp),
       x: event_type === 'click' ? x : null,
       y: event_type === 'click' ? y : null,
+      depth: event_type === 'scroll_depth' ? depth : null,
+      metadata: event_type === 'page_view' ? metadata : null,
     });
 
     await newEvent.save();
