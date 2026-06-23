@@ -9,7 +9,7 @@ const EventSchema = new mongoose.Schema({
   event_type: {
     type: String,
     required: true,
-    enum: ['page_view', 'click'],
+    enum: ['page_view', 'click', 'scroll_depth'],
   },
   page_url: {
     type: String,
@@ -26,6 +26,14 @@ const EventSchema = new mongoose.Schema({
   },
   y: {
     type: Number,
+    default: null,
+  },
+  depth: {
+    type: Number,
+    default: null,
+  },
+  metadata: {
+    type: mongoose.Schema.Types.Mixed,
     default: null,
   },
   created_at: {
