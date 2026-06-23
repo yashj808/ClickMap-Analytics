@@ -10,6 +10,7 @@ import connectDB from './db.js';
 import eventRoutes from './routes/events.js';
 import sessionRoutes from './routes/sessions.js';
 import heatmapRoutes from './routes/heatmap.js';
+import pageStatsRoutes from './routes/pageStats.js';
 
 // Setup environment variables
 dotenv.config();
@@ -41,6 +42,7 @@ app.get('/demo', (req, res) => {
 app.use('/api/events', eventRoutes);
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/heatmap', heatmapRoutes);
+app.use('/api/page-stats', pageStatsRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
