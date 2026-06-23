@@ -186,3 +186,26 @@ mongod --dbpath ./mongodb-data --port 27017
 - **Session Expiry**: Sessions are mapped directly to a client UUID stored in `localStorage`. In a production app, sessions would have idle timeout configurations (e.g., 30 minutes of inactivity) or cookie boundaries.
 - **Client Coordinates**: clientX/clientY are reported relative to the browser viewport. To align clicked coordinates with page layout components across varying monitor sizes, the Heatmap canvas renders a dedicated 1280x720 schematic wireframe of the demo page layout. It implements scaling filters to match target sizes responsively without skewing coordinate pixel layouts.
 - **Polling over WebSockets**: The dashboard retrieves updates by querying `GET /api/sessions` every 10 seconds. This avoids setting up WebSockets or server-sent events, drastically reducing backend architecture overhead while offering solid updates.
+
+---
+
+## Deployment
+
+This monorepo project is ready to be deployed across platforms like **Vercel** (for the frontend) and **Render** or **Railway** (for the backend).
+
+### 1. Frontend Dashboard (Vercel)
+- Create a new project on [Vercel](https://vercel.com) and import this repository.
+- In the project settings, set the **Root Directory** to `frontend`.
+- Vercel will automatically detect Vite and configure the build command (`npm run build`) and output directory (`dist`).
+- Add the following Environment Variable in the Vercel dashboard:
+  - `VITE_API_URL`: The URL of your deployed backend Express API (e.g., `https://clickmap-api.onrender.com`).
+- A `vercel.json` file is configured inside `frontend/` to manage URL rewrites, ensuring browser refreshes on routes like `/sessions` do not throw 404 errors.
+
+### 2. Backend API & Database (Render / Railway)
+- Create a new web service on [Render](https://render.com) or [Railway](https://railway.app) and import this repository.
+- Set the **Root Directory** to `backend`.
+- Configure the start command as `npm start`.
+- Set the following Environment Variables:
+  - `MONGODB_URI`: Your MongoDB connection string (use a free MongoDB Atlas cluster for hosting).
+  - `PORT`: `4000` (or let it bind dynamically).
+
