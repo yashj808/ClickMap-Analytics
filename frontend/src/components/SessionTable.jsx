@@ -55,7 +55,9 @@ function SessionTable({ sessions, selectedSessionId, onSelectSession, loading })
           <tr className="border-b border-zinc-800 bg-zinc-900/30 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
             <th className="py-4 px-6">Session ID</th>
             <th className="py-4 px-4 text-center">Events</th>
+            <th className="py-4 px-4 text-center">Bounced</th>
             <th className="py-4 px-4">Duration</th>
+            <th className="py-4 px-4">Device / Resolution</th>
             <th className="py-4 px-4">Last Active</th>
           </tr>
         </thead>
@@ -67,12 +69,16 @@ function SessionTable({ sessions, selectedSessionId, onSelectSession, loading })
                 key={session.session_id}
                 onClick={() => onSelectSession(session.session_id)}
                 className={`cursor-pointer transition-all duration-200 hover:bg-zinc-800/30 ${
-                  isSelected ? 'bg-indigo-600/10 text-white font-medium border-l-4 border-indigo-500' : 'text-zinc-400'
+                  isSelected 
+                    ? 'bg-indigo-600/10 text-white font-medium border-l-4 border-indigo-500' 
+                    : session.bounced 
+                      ? 'text-zinc-500 bg-zinc-950/10 opacity-70' 
+                      : 'text-zinc-400'
                 }`}
               >
                 <td className="py-4 px-6 font-mono text-xs">
                   <div className="flex items-center gap-2">
-                    <span className={`h-2 w-2 rounded-full ${isSelected ? 'bg-indigo-400' : 'bg-zinc-600'}`}></span>
+                    <span className={`h-2 w-2 rounded-full ${isSelected ? 'bg-indigo-400' : session.bounced ? 'bg-amber-500/60' : 'bg-emerald-500'}`}></span>
                     <span className="truncate max-w-[120px] sm:max-w-none hover:text-indigo-400" title={session.session_id}>
                       {session.session_id.substring(0, 18)}...
                     </span>
@@ -85,11 +91,23 @@ function SessionTable({ sessions, selectedSessionId, onSelectSession, loading })
                     {session.event_count}
                   </span>
                 </td>
+                <td className="py-4 px-4 text-center">
+                  <span className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded text-xs font-semibold ${
+                    session.bounced 
+                      ? 'bg-amber-500/10 text-amber-500/70 border border-amber-500/20' 
+                      : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                  }`}>
+                    {session.bounced ? 'Yes' : 'No'}
+                  </span>
+                </td>
                 <td className="py-4 px-4 text-xs font-medium">
                   <span className="flex items-center gap-1.5">
                     <Clock size={12} className="text-zinc-500" />
                     {getDuration(session.first_seen, session.last_seen)}
                   </span>
+                </td>
+                <td className="py-4 px-4 text-xs font-mono text-zinc-500">
+                  {session.device ? `${session.device.screen_width} × ${session.device.screen_height}` : 'N/A'}
                 </td>
                 <td className="py-4 px-4 text-xs">
                   <span className="flex items-center gap-1.5 text-zinc-500">
