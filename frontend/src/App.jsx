@@ -80,6 +80,9 @@ function App() {
       {/* Footer bar */}
       <footer className="border-t border-zinc-900 bg-zinc-950/40 py-6 text-center text-xs text-zinc-600 relative z-10">
         <p>&copy; 2026 ClickMap Analytics Dashboard. Built with React & Tailwind CSS.</p>
+        <p className="mt-1 text-[11px] text-zinc-500">
+          Developer: Yash Jogdand | Email: <a href="mailto:yashjogdandyj@gmail.com" className="text-indigo-400 hover:underline">yashjogdandyj@gmail.com</a>
+        </p>
       </footer>
     </div>
   );
