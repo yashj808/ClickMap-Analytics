@@ -1,7 +1,15 @@
 (function () {
-  // Determine API endpoint dynamically from the script source URL
+  // Determine API endpoint dynamically, defaulting to the production Render URL
+  const API_URL = 'https://clickmap-analytics.onrender.com';
   const scriptSrc = document.currentScript ? document.currentScript.src : '';
-  const apiOrigin = scriptSrc ? new URL(scriptSrc).origin : window.location.origin;
+  
+  let apiOrigin = API_URL;
+  if (scriptSrc && (scriptSrc.includes('localhost') || scriptSrc.includes('127.0.0.1'))) {
+    apiOrigin = new URL(scriptSrc).origin;
+  } else if (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')) {
+    apiOrigin = window.location.origin;
+  }
+  
   const apiEndpoint = `${apiOrigin}/api/events`;
 
   // Session Management
